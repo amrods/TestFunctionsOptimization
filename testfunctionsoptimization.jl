@@ -2,6 +2,7 @@
 
 using BenchmarkTools
 using LoopVectorization
+using LineSearches
 using Optim
 using BlackBoxOptim
 using GalacticOptim
