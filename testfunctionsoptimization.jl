@@ -1,18 +1,12 @@
 #! test functions for optimization
+# https://en.wikipedia.org/wiki/Test_functions_for_optimization
 
-using BenchmarkTools
-using LoopVectorization
-using LineSearches
-using Optim
-using BlackBoxOptim
-using GalacticOptim
-using NLopt
-using NLsolve
-using ComponentArrays
-using UnPack
+##
+# functions
 
 # Rastrigin function
 # rastrigin(0) == 0
+# search domain: -5.12 <= x[i] <= 5.12
 function rastrigin(x, A=10)
     n = length(x)
     A*n + sum(x[i]^2 - A*cos(2π*x[i]) for i in 1:n)
@@ -20,14 +14,16 @@ end
 
 # Ackley function
 # ackley(0) == 0
-function ackley(xx)
-    x = xx[1]
-    y = xx[2]
-    -20exp(-0.2sqrt(0.5(x^2 + y^2))) - exp(0.5(cos(2π*x) + cos(2π*y))) + ℯ + 20
+# search domain: -5 <= x[i] <= 5
+function ackley(x, params=[20, 0.2, 2π, 2])
+    n = length(x)
+    a, b, c, d = (params...,)
+    -a * exp(-b * sqrt(1/d * sum(x[i]^2 for i in 1:n))) - exp(1/d * sum(cos(c * x[i]) for i in 1:n)) + a + exp(1)
 end
 
 # Sphere function
 # sphere(0) == 0
+# search domain: -inf <= x[i] <= inf
 function sphere(x)
     n = length(x)
     sum(x[i]^2 for i in 1:n)
@@ -35,9 +31,11 @@ end
 
 # Rosenbrock function
 # rosenbrock(1) == 0
-function rosenbrock_ca(ca, p=p)
-    @unpack a, b = p
-    @unpack x, y = ca
+# search domain: -inf <= x[i] <= inf
+function rosenbrock_2(xx, params)
+    a, b = (params...,)
+    x = xx[1]
+    y = xx[2]
     return (a - x)^2 + b*(y - x^2)^2 
 end
 
@@ -55,6 +53,7 @@ end
 
 # Beale function
 # beale([3, 0.5]) == 0
+# search domain: -4.5 <= x[i] <= 4.5
 function beale(xx)
     x = xx[1]
     y = xx[2]
@@ -63,6 +62,7 @@ end
 
 # Goldstein-Price function
 # goldsteinprice([0, -1]) == 3
+# search domain: -2 <= x[i] <= 2
 function goldsteinprice(xx)
     x = xx[1]
     y = xx[2]
@@ -72,6 +72,7 @@ end
 
 # Booth function
 # booth([1, 3]) == 0
+# search domain: -10 <= x[i] <= 10
 function booth(xx)
     x = xx[1]
     y = xx[2]
@@ -80,6 +81,7 @@ end
 
 # Burkin function no. 6
 # burkin6([-10, 1]) == 0
+# search domain: -15 <= x <= -5, -3 <= y <= 3
 function burkin6(xx)
     x = xx[1]
     y = xx[2]
@@ -88,6 +90,7 @@ end
 
 # Matyas function
 # matyas(0) == 0
+# search domain: -10 <= x[i] <= 10
 function matyas(xx)
     x = xx[1]
     y = xx[2]
@@ -96,21 +99,40 @@ end
 
 # Lévi function no. 13
 # levi13(1) == 0
+# search domain: -10 <= x[i] <= 10
 function levi13(xx)
     x = xx[1]
     y = xx[2]
     sin(3π*x)^2 + (x - 1)^2 * (1 + sin(3π*y)^2) + (y - 1)^2 * (1 + sin(2π*y)^2)
 end
 
+# Griewank function
+# griewank(0) == 0
+# search domain: -inf <= x[i] <= inf
+function griewank(x)
+    n = length(x)
+    p(x, i) = cos(x[i]/sqrt(i))
+    1 + 1/4000 * sum(x[i]^2 for i in 1:n) - prod(p(x[i], i) for i in 1:n)
+end
+
+function griewank_ns(x)
+    n = length(x)
+    p(x, i) = abs(cos(x[i]/(2sqrt(i)))) - abs(sin(x[i]/(2sqrt(i))))
+    1 + 1/4000 * sum(x[i]^2 for i in 1:n) - prod(p(x[i], i) for i in 1:n)
+end
+
 # Himmelblau function
 # himmelblau([3, 2]) == himmelblau([-2.805118, 3.131312]) == himmelblau([-3.779310, -3.283186]) == himmelblau([3.584428, -1.848126]) == 0
+# search domain: -5 <= x[i] <= 5
 function himmelblau(xx)
     x = xx[1]
     y = xx[2]
     (x^2 + y - 11)^2 + (x + y^2 - 7)^2
 end
 
-# Three-hump camel function, camel(0) == 0
+# Three-hump camel function
+# camel(0) == 0
+# search domain: -5 <= x[i] <= 5
 function camel(xx)
     x = xx[1]
     y = xx[2]
@@ -119,6 +141,7 @@ end
 
 # Easom function
 # easom([π, π]) == -1
+# search domain: -100 <= x[i] <= 100
 function easom(xx)
     x = xx[1]
     y = xx[2]
@@ -127,6 +150,7 @@ end
 
 # Cross-in-tray function
 # crossintray([1.34941, -1.34941]) == crossintray([1.34941, 1.34941]) == crossintray([-1.34941, 1.34941]) == crossintray([-1.34941, -1.34941]) == -2.06261
+# search domain: -10 <= x[i] <= 10
 function crossintray(xx)
     x = xx[1]
     y = xx[2]
@@ -135,14 +159,16 @@ end
 
 # Eggholder function
 # eggholder([512, 404.2319]) == -959.6407
+# search domain: -512 <= x[i] <= 512
 function eggholder(xx)
     x = xx[1]
     y = xx[2]
-    -(y + 47) * sin(sqrt(abs(x/2 + (y + 47)))) - x * sin(sqrt(x - (y + 47)))
+    -(y + 47) * sin(sqrt(abs(x/2 + (y + 47)))) - x * sin(sqrt(abs(x - (y + 47))))
 end
 
 # Hölder table function
 # holder([8.05502, 9.66459]) == holder([-8.05502, 9.66459]) == holder([8.05502, -9.66459]) == holder([-8.05502, -9.66459]) == -19.2085
+# search domain: -10 <= x[i] <= 10
 function holder(xx)
     x = xx[1]
     y = xx[2]
@@ -151,6 +177,7 @@ end
 
 # McCormick function
 # mccormick([-0.54719, -1.54719]) == -1.9133
+# search domain: -1.5 <= x <= 4, -3 <= y <= 4
 function mccormick(xx)
     x = xx[1]
     y = xx[2]
@@ -159,6 +186,7 @@ end
 
 # Schaffer function no. 2
 # schaffer2(0) == 0
+# search domain: -100 <= x[i] <= 100
 function schaffer2(xx)
     x = xx[1]
     y = xx[2]
@@ -166,7 +194,8 @@ function schaffer2(xx)
 end
 
 # Schaffer function no. 4
-# schaffer4([0, 1.25313]) == schaffer4([0, -1.25313]) == 0.292579
+# schaffer4([0, 1.25313]) == schaffer4([0, -1.25313]) == schaffer4([1.25313, 0]) == schaffer4([-1.25313, 0]) == 0.292579
+# search domain: -100 <= x[i] <= 100
 function schaffer4(xx)
     x = xx[1]
     y = xx[2]
@@ -175,7 +204,17 @@ end
 
 # Styblinski-Tang function
 # -39.16617n < styblinskitang(-2.903534) < -39.16616n
+# search domain: -5 <= x[i] <= 5
 function styblinskitang(x)
     n = length(x)
     sum(x[i]^4 - 16x[i]^2 + 5x[i] in 1:n)/2
+end
+
+# Shekel function
+#
+# search domain: -inf <= x[i] <= inf
+function shekel(x, c=repeat([1.2], 30), a=repeat([3.5], length(x), length(c)))
+    n = length(x)
+    m = length(c)
+    sum(inv(c[i] + sum((x[j] - a[j, i]))^2 for j in 1:n) for i in 1:m)
 end
