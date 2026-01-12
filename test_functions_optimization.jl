@@ -61,7 +61,7 @@ function beale(xx)
 end
 
 # Goldstein-Price function
-# goldsteinprice([0, -1]) == 3
+# goldstein_price([0, -1]) == 3
 # search domain: -2 <= x[i] <= 2
 function goldstein_price(xx)
     x = xx[1]
@@ -149,7 +149,7 @@ function easom(xx)
 end
 
 # Cross-in-tray function
-# crossintray([1.34941, -1.34941]) == crossintray([1.34941, 1.34941]) == crossintray([-1.34941, 1.34941]) == crossintray([-1.34941, -1.34941]) == -2.06261
+# cross_in_tray([1.34941, -1.34941]) == cross_in_tray([1.34941, 1.34941]) == cross_in_tray([-1.34941, 1.34941]) == cross_in_tray([-1.34941, -1.34941]) == -2.06261
 # search domain: -10 <= x[i] <= 10
 function cross_in_tray(xx)
     x = xx[1]
@@ -203,7 +203,7 @@ function schaffer4(xx)
 end
 
 # Styblinski-Tang function
-# -39.16617n < styblinskitang(-2.903534) < -39.16616n
+# -39.16617n < styblinski_tang(-2.903534) < -39.16616n
 # search domain: -5 <= x[i] <= 5
 function styblinski_tang(x)
     n = length(x)
