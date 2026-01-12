@@ -79,10 +79,10 @@ function booth(xx)
     (x + 2y - 7)^2 + (2x + y - 5)^2
 end
 
-# Burkin function no. 6
-# burkin6([-10, 1]) == 0
+# Bukin function no. 6
+# bukin6([-10, 1]) == 0
 # search domain: -15 <= x <= -5, -3 <= y <= 3
-function burkin6(xx)
+function bukin6(xx)
     x = xx[1]
     y = xx[2]
     100sqrt(abs(y - 0.01x^2)) + 0.01abs(x + 10)
