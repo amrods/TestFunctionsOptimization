@@ -32,7 +32,7 @@ end
 # Rosenbrock function
 # rosenbrock(1) == 0
 # search domain: -inf <= x[i] <= inf
-function rosenbrock_2(xx, params)
+function rosenbrock_2d(xx, params)
     a, b = (params...,)
     x = xx[1]
     y = xx[2]
@@ -63,7 +63,7 @@ end
 # Goldstein-Price function
 # goldsteinprice([0, -1]) == 3
 # search domain: -2 <= x[i] <= 2
-function goldsteinprice(xx)
+function goldstein_price(xx)
     x = xx[1]
     y = xx[2]
     (1 + (x + y + 1)^2 * (19 - 14x + 3x^2 - 14y + 6x*y + 3y^2))*
@@ -151,7 +151,7 @@ end
 # Cross-in-tray function
 # crossintray([1.34941, -1.34941]) == crossintray([1.34941, 1.34941]) == crossintray([-1.34941, 1.34941]) == crossintray([-1.34941, -1.34941]) == -2.06261
 # search domain: -10 <= x[i] <= 10
-function crossintray(xx)
+function cross_in_tray(xx)
     x = xx[1]
     y = xx[2]
     -0.0001(abs(sin(x) * sin(y) * exp(abs(100 - sqrt(x^2 + y^2)/π))) + 1)^0.1
@@ -205,9 +205,9 @@ end
 # Styblinski-Tang function
 # -39.16617n < styblinskitang(-2.903534) < -39.16616n
 # search domain: -5 <= x[i] <= 5
-function styblinskitang(x)
+function styblinski_tang(x)
     n = length(x)
-    sum(x[i]^4 - 16x[i]^2 + 5x[i] in 1:n)/2
+    sum(x[i]^4 - 16x[i]^2 + 5x[i] for i in 1:n)/2
 end
 
 # Shekel function
