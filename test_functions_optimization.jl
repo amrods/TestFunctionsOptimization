@@ -36,7 +36,7 @@ function rosenbrock_2(xx, params)
     a, b = (params...,)
     x = xx[1]
     y = xx[2]
-    return (a - x)^2 + b*(y - x^2)^2 
+    (a - x)^2 + b*(y - x^2)^2 
 end
 
 function rosenbrock_n2(x)
