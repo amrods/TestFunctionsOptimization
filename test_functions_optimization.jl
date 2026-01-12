@@ -111,7 +111,7 @@ end
 # search domain: -inf <= x[i] <= inf
 function griewank(x)
     n = length(x)
-    p(x, i) = cos(x[i]/sqrt(i))
+    p(x, i) = cos(x/sqrt(i))
     1 + 1/4000 * sum(x[i]^2 for i in 1:n) - prod(p(x[i], i) for i in 1:n)
 end
 
