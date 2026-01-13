@@ -9,7 +9,7 @@
 # search domain: -5.12 <= x[i] <= 5.12
 function rastrigin(x, A=10)
     n = length(x)
-    A * n + sum(x[i]^2 - A*cos(2π * x[i]) for i in 1:n)
+    A * n + sum(x[i]^2 - A * cos(2π * x[i]) for i in 1:n)
 end
 
 # Ackley function
