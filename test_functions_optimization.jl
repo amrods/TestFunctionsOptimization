@@ -9,7 +9,7 @@
 # search domain: -5.12 <= x[i] <= 5.12
 function rastrigin(x, A=10)
     n = length(x)
-    A*n + sum(x[i]^2 - A*cos(2π*x[i]) for i in 1:n)
+    A * n + sum(x[i]^2 - A*cos(2π * x[i]) for i in 1:n)
 end
 
 # Ackley function
@@ -36,19 +36,19 @@ function rosenbrock_2d(xx, params)
     a, b = (params...,)
     x = xx[1]
     y = xx[2]
-    (a - x)^2 + b*(y - x^2)^2 
+    (a - x)^2 + b * (y - x^2)^2 
 end
 
 function rosenbrock_n2(x)
     n = length(x)
     isodd(n) && return throw(error("length of x must be even"))
     n2 = div(n, 2)
-    sum(100(x[2i-1]^2 - x[2i])^2 + (x[2i-1] - 1)^2 for i in 1:n2)
+    sum(100(x[2i - 1]^2 - x[2i])^2 + (x[2i - 1] - 1)^2 for i in 1:n2)
 end
 
 function rosenbrock_n(x)
     n1 = length(x) - 1
-    sum(100(x[i+1] - x[i]^2)^2 + (1 - x[i])^2 for i in 1:n1)
+    sum(100(x[i + 1] - x[i]^2)^2 + (1 - x[i])^2 for i in 1:n1)
 end
 
 # Beale function
@@ -57,7 +57,7 @@ end
 function beale(xx)
     x = xx[1]
     y = xx[2]
-    (1.5 - x + x*y)^2 + (2.25 - x + x*y^2)^2 + (2.625 - x + x*y^3)^2
+    (1.5 - x + x * y)^2 + (2.25 - x + x * y^2)^2 + (2.625 - x + x * y^3)^2
 end
 
 # Goldstein-Price function
@@ -66,8 +66,8 @@ end
 function goldstein_price(xx)
     x = xx[1]
     y = xx[2]
-    (1 + (x + y + 1)^2 * (19 - 14x + 3x^2 - 14y + 6x*y + 3y^2))*
-    (30 + (2x - 3y)^2 * (18 - 32x + 12x^2 + 48y - 36x*y + 27y^2))
+    (1 + (x + y + 1)^2 * (19 - 14x + 3x^2 - 14y + 6x * y + 3y^2)) *
+    (30 + (2x - 3y)^2 * (18 - 32x + 12x^2 + 48y - 36x * y + 27y^2))
 end
 
 # Booth function
@@ -94,7 +94,7 @@ end
 function matyas(xx)
     x = xx[1]
     y = xx[2]
-    0.26(x^2 + y^2) - 0.48x*y
+    0.26(x^2 + y^2) - 0.48x * y
 end
 
 # Lévi function no. 13
@@ -103,7 +103,7 @@ end
 function levi13(xx)
     x = xx[1]
     y = xx[2]
-    sin(3π*x)^2 + (x - 1)^2 * (1 + sin(3π*y)^2) + (y - 1)^2 * (1 + sin(2π*y)^2)
+    sin(3π * x)^2 + (x - 1)^2 * (1 + sin(3π * y)^2) + (y - 1)^2 * (1 + sin(2π * y)^2)
 end
 
 # Griewank function
@@ -136,7 +136,7 @@ end
 function camel(xx)
     x = xx[1]
     y = xx[2]
-    2x^2 - 1.05x^4 + x^6/6 + x*y + y^2
+    2x^2 - 1.05x^4 + x^6/6 + x * y + y^2
 end
 
 # Easom function
